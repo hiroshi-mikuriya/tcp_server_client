@@ -21,12 +21,19 @@ public:
       perror("close");
     }
   }
-  
+
   int get() const { return fd_; }
 };
 
 void tcpServer() {
   Socket sock0;
+
+  int yes = 1;
+  if (setsockopt(sock0.get(), SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) <
+      0) {
+    perror("server setsockopt");
+    return;
+  }
 
   sockaddr_in addr;
   addr.sin_family = AF_INET;
